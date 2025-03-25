@@ -213,7 +213,7 @@ fi
 
 function install_deps() {
     if [ -n "$DEPS" ]; then
-$CONTAINER_RUN_CMD   $PKG_CMD "$DEPS_PKGS"
+$CONTAINER_RUN_CMD   $PKG_CMD $DEPS_PKGS
     fi
 
 }
