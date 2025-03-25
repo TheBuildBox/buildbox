@@ -59,7 +59,7 @@ EOF
 
 # parsing command line arguments:
 optstring="l:r:c:o:n:hbts:d:"
-optstring_long="lang:,registry:,container-cmd:,help,itesy,build,build-script:,deps:"
+optstring_long="lang:,registry:,container-cmd:,help,test,build,build-script:,deps:"
 
 
 parsed_args=$(getopt  -n "builbo" -o "$optstring" -l "$optstring_long" -- "$@")
