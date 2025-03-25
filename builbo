@@ -35,23 +35,32 @@ fi
 
 function usage() {
 >&2 cat <<EOF
-Usage: $0 options
+
+builbo: build software projects in buildbox containers.
+
+USAGE: $0 options
 
 These are the supported options:
-[ -l | --lang (latex|c) ]                    - compilation language (default: $LANG)
+[ -l | --lang (c|latex) ]                    - compilation language (default: $LANG)
 [ -r | --registry (quay.io|... ]             - container registry (default: $REGISTRY)
 [ -c | --container-cmd (podman|docker) ]     - default: $CONTAINER_CMD (auto-detected)
 [ -o | --os (fedora|debian|ubuntu|suse) ]         - linux distro (default: $OS)
 [ -n | --registry-namespace (...) ]          - default: $NAMESPACE 
 [ -s  | --build-script (path) ]              - command or local script (in the CWD)  for building the project.
-[ -d | --deps (pkg,pkg,pkg,...) ]            - packages to install
-[ -h | --help ]                              - print this usage information
-[-t | --test ]                               - print some info for  testing this program
-[ -b | --build ]                             - perform a build in the CWD
-
-Exactly one of the actions (help, test, and build) must be selected.
+[ -d | --deps (pkg,pkg,pkg,...) ]            - additional packages to install (comma-separated
+[ -h | --help ]                              - action help: print this usage information
+[-t | --test ]                               - action test: print some diagnostic info for  testing this program
+[ -b | --build ]                             - action build: perform a build in the CWD
 
 
+The Options -l, -r, -o, and -n in combination determine the  buildbox image (by tag) to be used.
+
+
+The options -h, -t, and -b are the available actions (help, test, and build) to be performed.
+
+Exactly one of the actions  must be selected.
+
+The build action requires the additional option -s
 
 EOF
 
