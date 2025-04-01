@@ -55,7 +55,7 @@ install-cli: ## install the builbo cli.
 	@install ./builbo $(INSTALL_DIR)
 
 .PHONY: test
-	test: check ## perform tests.
+	test: check ## perform tests (checks/linting).
 
 
 .PHONY: shellcheck
@@ -67,7 +67,7 @@ install-cli: ## install the builbo cli.
 check: checkmake shellcheck  ## perform checks and linting
 
 .PHONY: makeckmake
-checkmake: ## lint the Makefile with checkmake .
+checkmake: ## lint the Makefile with checkmake.
 	checkmake Makefile
 
 .PHONY: clean
@@ -78,7 +78,7 @@ clean: ## clean the working directory (currently vain).
 .PHONY: help
 help: ## Show help for each of the Makefile targets.
 	@echo  "Usage: make [TARGET ....]"
-	@echo ""
+	@echo " Available targets:"
 	@grep --no-filename -E '^[a-zA-Z_%-. ]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo "$$HELPTEXT"
 
