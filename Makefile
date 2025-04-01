@@ -52,3 +52,8 @@ check: checkmake
 .PHONY: makeckmake
 checkmake:
 	checkmake Makefile
+
+.PHONY: clean
+
+clean:
+	@echo "Note: no generated files.  not cleaning. use git to clean."
