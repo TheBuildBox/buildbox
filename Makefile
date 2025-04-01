@@ -62,8 +62,7 @@ install-cli: ## install the builbo cli.
 
 
 .PHONY: shellcheck
-	shellcheck: ## lint shell scripts
-
+shellcheck: ## lint shell scripts
 	shellcheck --severity=warning --format=gcc --shell=bash  $(shell find .  -type f -name '*.sh') ./builbo
 
 .PHONY: check
