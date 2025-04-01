@@ -21,39 +21,59 @@ CONTAINER_CMD=$(shell docker version >/dev/null 2>&1 && echo docker)
 endif
 endif
 
+define HELPTEXT
+Options:
+	IMAGE_TAG			tag to use for the image (default: latest)
+	IMAGE_OS			base OS for the image(fedora|suse|debian|ubuntu) (default: fedora
+	IMAGE_LANG			programming language to create image for (c|latex) (default: c)
+	CONTAINER_CMD		container command (podman|docker) (default: auto-detected)
+	IMAGE_REGISTRY		container registry to use (default: quay.io)
+REGISTRY_NAMESPACE	container registry namespace (default: buildbox)
+endef
+export HELPTEXT
+
+
 
 .PHONY: vars
-vars:
+vars: ## print values of variables.
 	@echo CONTAINER_CMD: $(CONTAINER_CMD)
 	@echo IMG: $(IMG)
 
 .PHONY: image-build
-image-build:
+image-build: ## build a container image.
 	$(CONTAINER_CMD) build -t $(IMG) --build-arg BUILD_LANG=$(IMAGE_LANG) --build-arg INSTALL_SCRIPT=install-packages_$(IMAGE_OS)_$(IMAGE_LANG).sh  -f Containerfile.$(IMAGE_OS) .
 
 
-.PHONY: image-push
+.PHONY: image-push ## push a container image to the registry.
 image-push:
 	$(CONTAINER_CMD) push $(IMG) 
 
 
 
 .PHONY: install-cli
-install-cli:
+install-cli: ## install the builbo cli.
 	@install ./builbo $(INSTALL_DIR)
 
 .PHONY: test
-	test: check
+	test: check ## perform tests.
 
 .PHONY: check
 
-check: checkmake
+check: checkmake ## perform checks.
 
 .PHONY: makeckmake
-checkmake:
+checkmake: ## lint the Makefile with checkmake .
 	checkmake Makefile
 
 .PHONY: clean
 
-clean:
+clean: ## clean the working directory (currently vain).
 	@echo "Note: no generated files.  not cleaning. use git to clean."
+
+.PHONY: help
+help: ## Show help for each of the Makefile targets.
+	@echo  "Usage: make [TARGET ....]"
+	@echo ""
+	@grep --no-filename -E '^[a-zA-Z_%-. ]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@echo "$$HELPTEXT"
+
