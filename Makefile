@@ -41,3 +41,14 @@ image-push:
 .PHONY: install-cli
 install-cli:
 	@install ./builbo $(INSTALL_DIR)
+
+.PHONY: test
+	test: check
+
+.PHONY: check
+
+check: checkmake
+
+.PHONY: makeckmake
+checkmake:
+	checkmake Makefile
