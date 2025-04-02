@@ -41,12 +41,12 @@ all: help
 vars: vars1 vars2 ## print values of some variables.
 
 .PHONY: vars1
-vars1: ## print values of some variables - part 1
+vars1: ## print values of some variables (part 1)
 	@echo IMAGE_TAG: $(IMAGE_TAG)
 	@echo IMAGE_OS: $(IMAGE_OS)
 	@echo IMAGE_LANG $(IMAGE_LANG)
 .PHONY: vars2
-vars2: ## print values of some variables - part 2.
+vars2: ## print values of some variables (part 2)
 	@echo IMAGE_REGISTRY $(IMAGE_REGISTRY)
 	@echo REGISTRY_NAMESPACE $(REGISTRY_NAMESPACE)
 	@echo CONTAINER_CMD: $(CONTAINER_CMD)
@@ -88,7 +88,7 @@ clean: ## clean the working directory (currently vain).
 	@echo "Note: no generated files.  not cleaning. use git to clean."
 
 .PHONY: help
-help: ## Show help for each of the Makefile targets.
+help: ## Show help for the Makefile targets.
 	@echo  "Usage: make [TARGET ....]"
 	@echo " Available targets:"
 	@grep --no-filename -E '^[a-zA-Z_%-. ]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
