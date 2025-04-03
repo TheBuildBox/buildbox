@@ -35,7 +35,7 @@ export HELPTEXT
 
 .PHONY: all
 
-all: help
+all: help ## default target (invokes help)
 
 .PHONY: vars
 vars: vars1 vars2 ## print values of some variables.
@@ -88,10 +88,10 @@ clean: ## clean the working directory (currently vain).
 	@echo "Note: no generated files.  not cleaning. use git to clean."
 
 .PHONY: help
-help: ## Show help for the Makefile targets.
-	@echo  "Usage: make [TARGET ....]"
+help: ## Show usage info  for the Makefile targets.
+	@echo  "Usage: make [OPTION1=value OPTION2=value  ...] [TARGET ...]"
 	@echo " Available targets:"
-	grep --no-filename -E '^[a-zA-Z0-9_%-. ]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep --no-filename -E '^[a-zA-Z0-9_%-. ]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo "$$HELPTEXT"
 
 
