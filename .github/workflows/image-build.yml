@@ -34,3 +34,23 @@ jobs:
       - name: Build the container image
         run: |
           make CONTAINER_CMD=docker IMAGE_OS=${{ matrix.os}} IMAGE_LANG=${{ matrix.lang}} image-build
+   # build and push images to quay.io - only on push, not on PRs.
+  ImagePush:
+    strategy:
+      matrix:
+        os: [fedora, suse, debian, ubuntu]
+        lang: [c,latex]
+
+    #needs: [CheckMake, ShellCheck ]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the container image
+        run: |
+          make CONTAINER_CMD=docker IMAGE_OS=${{ matrix.os}} IMAGE_LANG=${{ matrix.lang}} image-build
+      - name: log in to quay.io
+        run: echo "${{ secrets.QUAY_PASS }}" | docker login -u "${{ secrets.QUAY_USER }}" --password-stdin quay.io
+      - name: Push  the container image to quay.io
+        run: |
+          make CONTAINER_CMD=docker IMAGE_OS=${{ matrix.os}} IMAGE_LANG=${{ matrix.lang}} image-push
