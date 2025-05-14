@@ -38,7 +38,7 @@ jobs:
           cd latex-doc-example
       - name: build in builbo
         run: |
-          builbo -l latex -o suse -b -s "make pdf"
+          builbo -l latex -o suse -b -s "make doc"
 
   tinyproxy:
     name: build tinyproxy C  project
