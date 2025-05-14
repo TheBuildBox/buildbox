@@ -36,6 +36,8 @@ jobs:
           cd
           git clone https://github.com/obnoxxx/latex-doc-example.git
           cd latex-doc-example
+      - name: debug info
+        run: pwd
       - name: build in builbo
         run: |
           builbo -l latex -o suse -b -s "make doc"
@@ -56,6 +58,10 @@ jobs:
           cd
           git clone https://github.com/tinyproxy/tinyproxy.git
           cd tinyproxy
+      - name: debug info
+        run: |
+          pwd
+          ls -l
       - name: build in builbo
         run: |
           builbo -l c -o fedora  -b -s "./autogen.sh && make"
