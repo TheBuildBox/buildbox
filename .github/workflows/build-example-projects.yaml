@@ -33,7 +33,6 @@ jobs:
           sudo apt-get install -y git
       - name: check out example repo
         run: |
-          cd
           git clone https://github.com/obnoxxx/latex-doc-example.git
           cd latex-doc-example
       - name: debug info
@@ -55,7 +54,6 @@ jobs:
           sudo apt-get install -y git
       - name: check out tinyproxy repo
         run: |
-          cd
           git clone https://github.com/tinyproxy/tinyproxy.git
           cd tinyproxy
       - name: debug info
