@@ -31,14 +31,11 @@ jobs:
       - name: install git
         run: |
           sudo apt-get install -y git
-      - name: check out example repo
+      - name: check out example repo and build
         run: |
           git clone https://github.com/obnoxxx/latex-doc-example.git
           cd latex-doc-example
-      - name: debug info
-        run: pwd
-      - name: build in builbo
-        run: |
+          pwd
           builbo -l latex -o suse -b -s "make doc"
 
   tinyproxy:
@@ -52,15 +49,11 @@ jobs:
       - name: install git
         run: |
           sudo apt-get install -y git
-      - name: check out tinyproxy repo
+      - name: check out tinyproxy repo and build
         run: |
           git clone https://github.com/tinyproxy/tinyproxy.git
           cd tinyproxy
-      - name: debug info
-        run: |
           pwd
           ls -l
-      - name: build in builbo
-        run: |
           builbo -l c -o fedora  -b -s "./autogen.sh && make"
 
