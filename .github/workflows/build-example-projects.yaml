@@ -65,5 +65,5 @@ jobs:
           cd tinyproxy
       - name: build in builbo
         run: |
-          builbo -l c -o fedora  -b -s "./configure && make"
+          builbo -l c -o fedora  -b -s "./autogen.sh && make"
 
