@@ -24,7 +24,7 @@ It is however of course possible to use the images interactively.
 * go: golang and make - for building golang projects
 * latex: LaTeX/beamer/wiki2beamer and make - build LaTeX documents and LaTeX/beamer presentations
 
-**variants:**
+**possible future variants:**
 
 * container image packaging
 * rpm packaging
