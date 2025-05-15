@@ -34,7 +34,7 @@ It is however of course possible to use the images interactively.
 Of these combinations, only the c and latex  images on fedora, debian, ubuntu, and openSUSE  are   implemented so far.
 
 
-In order to build or use these container images,  one will need a system (typically Linux) with docker or podman.
+In order to build or use these container images,  one will need a system (typically Linux or MacOS) with docker or podman and `make`installed  and the ability to run bash scripts.
 
 
 
@@ -52,12 +52,14 @@ $ make  IMAGE_LANG=c IMAGE_OS=fedora IMAGE_REGISTRY=quay.io REGISTRY_NAMESPACE=f
 
 ```
 
-Note that `quay.io`is the default registry. The above example shows how to override it.
+Note that `quay.io` is the default registry and `buildbox` the default namespace . The above example shows how to override them.
 
-**Example for using the image:**
+**Using the image:**
 
-From the root of a software project that one wants to compile, arbitrary commands  can be run inside the build continer
-as follows, for example `configure`and `make`as well as installation of library dependencies.
+From the root of a software project that one wants to compile, arbitrary commands contained in the image   can be run inside the build container
+as follows, for example `configure`and `make` as well as installation of library dependencies.
+
+Example for starting an interactive shell:
 
 ```console
 
@@ -93,16 +95,26 @@ $ builbo -c -l c -o debian -s ./build.sh --build
 ...
 $
 ```
-
-As a result of this process, build artifacts will be placed under  the CWD (project checkout dir).
-
-
-example for using the container interactively:
+instead of creating a `build.sh` script, commands can be given directly like this:
 
 ```console
 $ git clone project
 $ cd project_dir
-$ edit build.sh
+$ builbo -c -l c -o debian  -b -s "./configure && make"
+...
+$
+```
+
+
+
+As a result of this process, build artifacts will be placed under  the CWD (project checkout dir).
+
+
+example for using the container interactively with the `--enter`or `-e` parameter:
+
+```console
+$ git clone project
+$ cd project_dir
 $ builbo -c -l c -o debian --enter
 # ^D
 $
