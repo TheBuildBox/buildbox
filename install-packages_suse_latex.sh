@@ -13,6 +13,11 @@ zypper  install  -y git make cmake  texlive-beamer \
 	texlive-amstex \
 	texlive-xypic \
 	texlive-bibtex \
+	texlive-imakeidx \
+	texlive-makeindex \
+	texlive-latex-uni8 \
+	texlive-ginpenc \
+	texlive-german \
 	ghostscript vim less
 
 

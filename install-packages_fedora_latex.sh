@@ -5,7 +5,9 @@
 #dnf install -y groupinstall
 #dnf5 install 'dnf5-command(groupinstall)'
 #dnf -y groupinstall "Development Tools"
-dnf install  -y git make cmake texlive-beamer \
+dnf install  -y git make cmake less \
+	pdflatex \
+	texlive-beamer \
 	texlive-dvips \
 	texlive-amsaddr \
 	texlive-amscls \
@@ -15,7 +17,12 @@ dnf install  -y git make cmake texlive-beamer \
 	texlive-amscdx \
 	texlive-amslatex-primer \
 	texlive-xypic \
-	texlive-bibtex
+	texlive-bibtex\
+	 texlive-imakeidx \
+	 texlive-makeindex \
+	 texlive-ginpenc \
+	 texlive-latex-uni8 \
+	 texlive-german \
 	ghostscript
 
 
