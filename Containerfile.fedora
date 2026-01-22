@@ -11,7 +11,29 @@ LABEL org.opencontainers.image.vendor="buildbox"
 LABEL org.opencontainers.image.url="https://github.com/obnoxxx/buildbox"
 
 
+
 COPY  "${INSTALL_SCRIPT}" /usr/local/bin/install-packages.sh
 RUN chmod +x /usr/local/bin/install-packages.sh
-RUN /usr/local/bin/install-packages.sh
+ENV PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin
+# install, fix, and verify in ONE ATOMIC STEP
+RUN true && \
+    # Force a sane PATH for the duration of the install
+    export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin" && \
+    /usr/local/bin/install-packages.sh && \
+    echo "Restoring symlinks if broken..." && \
+    ( [ -L /bin ] || (mv /bin/* /usr/bin/ && rm -rf /bin && ln -s usr/bin /bin) ) && \
+    echo "Verifying binaries before layer commit..." && \
+    ls -l /usr/bin/make && \
+echo "Verifying with type builtin..." && \
+    # Use 'type -p' to see the path to the binary
+    if type -p make; then \
+        echo "Success: make found at $(type -p make)"; \
+        echo "your buildbox is ready."; \
+    else \
+        echo "CRITICAL: make is NOT in PATH. Current PATH: $PATH"; \
+        ls -ld /bin /usr/bin; \
+        exit 1; \
+    fi
+
+RUN make --version && pdflatex --version && kpsewhich article.cls
 

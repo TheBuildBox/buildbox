@@ -54,7 +54,7 @@ vars2: ## print values of some variables (part 2)
 
 .PHONY: image-build
 image-build: ## build a container image.
-	$(CONTAINER_CMD) build -t $(IMG) --build-arg BUILD_LANG=$(IMAGE_LANG) --build-arg INSTALL_SCRIPT=install-packages_$(IMAGE_OS)_$(IMAGE_LANG).sh  -f Containerfile.$(IMAGE_OS) .
+	$(CONTAINER_CMD) build --no-cache --progress=plain -t $(IMG) --build-arg BUILD_LANG=$(IMAGE_LANG) --build-arg INSTALL_SCRIPT=install-packages_$(IMAGE_OS)_$(IMAGE_LANG).sh  -f Containerfile.$(IMAGE_OS) .
 
 
 .PHONY: image-push 
