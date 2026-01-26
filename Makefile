@@ -7,7 +7,7 @@ IMAGE_TAG ?= latest
 IMAGE_OS ?= fedora
 IMAGE_LANG ?= c
 IMAGE_NAME ?= buildbox/$(IMAGE_OS)-$(IMAGE_LANG)
-INSTALL_DIR ?= /usr/local/bin
+NSTALL_DIR ?= /usr/local/bin
 
 IMG  ?= $(IMAGE_REGISTRY)/$(REGISTRY_NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)
 
@@ -21,14 +21,16 @@ CONTAINER_CMD=$(shell docker version >/dev/null 2>&1 && echo docker)
 endif
 endif
 
+include cli/Makefile
+
 define HELPTEXT
 Options:
 	IMAGE_TAG			tag to use for the image (default: latest)
 	IMAGE_OS			base OS for the image(fedora|suse|debian|ubuntu) (default: fedora
 	IMAGE_LANG			programming language to create image for (c|latex) (default: c)
-	CONTAINER_CMD		container command (podman|docker) (default: auto-detected)
-	IMAGE_REGISTRY		container registry to use (default: quay.io)
-REGISTRY_NAMESPACE	container registry namespace (default: buildbox)
+	CONTAINER_CMD			container command (podman|docker) (default: auto-detected)
+	IMAGE_REGISTRY			container registry to use (default: quay.io)
+	REGISTRY_NAMESPACE		container registry namespace (default: buildbox)
 endef
 export HELPTEXT
 
@@ -64,16 +66,17 @@ image-push: ## push a container image to the registry.
 
 
 .PHONY: install-cli
-install-cli: ## install the builbo cli.
-	@install ./builbo $(INSTALL_DIR)
+install-cli:$(INSTALL_PATH) ## install the builbo cli.
+#	@install ./builbo $(INSTALL_DIR)
 
 .PHONY: test
 	test: check ## perform tests (checks/linting).
 
 
 .PHONY: shellcheck
-shellcheck: ## lint shell scripts
-	shellcheck --severity=warning --format=gcc --shell=bash  $(shell find .  -type f -name '*.sh') ./builbo
+shellcheck: shellcheck-cli ## lint shell scripts
+
+	shellcheck --severity=warning --format=gcc --shell=bash  $(shell find .  -type f -name '*.sh') 
 
 .PHONY: check
 check: checkmake shellcheck  ## perform checks and linting
