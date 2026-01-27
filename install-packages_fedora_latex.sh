@@ -67,7 +67,7 @@ dnf5 install -y  https://kojipkgs.fedoraproject.org//packages/wiki2beamer/0.10.0
 # This forces the build to CRASH here if the files are missing
 if [ ! -f /usr/bin/make ]; then
         echo "ERROR: make was not found in /usr/bin!"
-        ls -la /usr/bin/ | grep make || echo "No make-related files found"
+        type make || echo "make not found in PATH"
         exit 1
 fi
 echo "/usr/bin/make found!"
