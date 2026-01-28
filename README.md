@@ -1,4 +1,9 @@
 
+[![Build Status](https://github.com/checkmake/checkmake/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/TheBuildBox/buildbox/actions)
+[![GPL license](https://img.shields.io/badge/license-GPL-green.svg)](http://opensource.org/licenses/GPL)
+
+
+
 The purpose of this project is to provide container images that can be used to compile/build and package software projects
 along with accompanying cli tooling to facilitate convenient execution of builds in those containers.
 
