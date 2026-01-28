@@ -85,7 +85,7 @@ check: checkmake shellcheck  ## perform checks and linting
 
 .PHONY: makeckmake
 checkmake: ## lint the Makefile with checkmake.
-	$(CHECKMAKE) Makefile
+	@$(CHECKMAKE) Makefile
 
 .PHONY: clean
 
