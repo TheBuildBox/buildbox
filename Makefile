@@ -25,8 +25,8 @@ CHECKMAKE=go run github.com/checkmake/checkmake/cmd/checkmake@latest
 
 include cli/Makefile
 
-define HELPTEXT
-Options:
+#Options:
+define HELPTEXT_OPTIONS
 	IMAGE_TAG			tag to use for the image (default: latest)
 	IMAGE_OS			base OS for the image(fedora|suse|debian|ubuntu) (default: fedora
 	IMAGE_LANG			programming language to create image for (c|latex) (default: c)
@@ -34,7 +34,7 @@ Options:
 	IMAGE_REGISTRY			container registry to use (default: quay.io)
 	REGISTRY_NAMESPACE		container registry namespace (default: buildbox)
 endef
-export HELPTEXT
+export HELPTEXT_OPTIONS
 
 
 .PHONY: all
@@ -97,6 +97,7 @@ help: ## Show usage info  for the Makefile targets.
 	@echo  "Usage: make [OPTION1=value OPTION2=value  ...] [TARGET ...]"
 	@echo " Available targets:"
 	@grep --no-filename -E '^[a-zA-Z0-9_%-. ]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-	@echo "$$HELPTEXT"
+	@echo "Options:"
+	@echo "$$HELPTEXT_OPTIONS"
 
 
