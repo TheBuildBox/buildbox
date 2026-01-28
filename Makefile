@@ -21,6 +21,8 @@ CONTAINER_CMD=$(shell docker version >/dev/null 2>&1 && echo docker)
 endif
 endif
 
+CHECKMAKE=go run github.com/checkmake/checkmake/cmd/checkmake@latest
+
 include cli/Makefile
 
 define HELPTEXT
@@ -83,7 +85,7 @@ check: checkmake shellcheck  ## perform checks and linting
 
 .PHONY: makeckmake
 checkmake: ## lint the Makefile with checkmake.
-	checkmake Makefile
+	$(CHECKMAKE) Makefile
 
 .PHONY: clean
 
