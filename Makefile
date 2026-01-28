@@ -68,7 +68,7 @@ image-push: ## push a container image to the registry.
 
 
 .PHONY: install-cli
-install-cli:$(INSTALL_PATH) ## install the builbo cli.
+install-cli: $(INSTALL_PATH) ## install the builbo cli.
 #	@install ./builbo $(INSTALL_DIR)
 
 .PHONY: test
