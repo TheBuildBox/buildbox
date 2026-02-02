@@ -4,6 +4,7 @@ LABEL maintainer="Michael Adam <obnox@samba.org>"
 
 ARG BUILD_LANG=""
 ARG INSTALL_SCRIPT=""
+ARG VERIFY_SCRIPT=""
 
 LABEL org.opencontainers.image.title="${BUILD_LANG}  Build Container"
 LABEL org.opencontainers.image.description="Container for building ${BUILD_LANG} projects"
@@ -12,6 +13,8 @@ LABEL org.opencontainers.image.url="https://github.com/obnoxxx/buildbox"
 
 
 
+COPY "${VERIFY_SCRIPT}" /usr/local/bin/verify.sh
+RUN chmod +x /usr/local/bin/verify.sh
 COPY  "${INSTALL_SCRIPT}" /usr/local/bin/install-packages.sh
 RUN chmod +x /usr/local/bin/install-packages.sh
 ENV PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin
@@ -23,17 +26,6 @@ RUN true && \
     echo "Restoring symlinks if broken..." && \
     ( [ -L /bin ] || (mv /bin/* /usr/bin/ && rm -rf /bin && ln -s usr/bin /bin) ) && \
     echo "Verifying binaries before layer commit..." && \
-    ls -l /usr/bin/make && \
-echo "Verifying with type builtin..." && \
-    # Use 'type -p' to see the path to the binary
-    if type -p make; then \
-        echo "Success: make found at $(type -p make)"; \
+    /usr/local/bin/verify.sh && \
         echo "your buildbox is ready."; \
-    else \
-        echo "CRITICAL: make is NOT in PATH. Current PATH: $PATH"; \
-        ls -ld /bin /usr/bin; \
-        exit 1; \
-    fi
-
-RUN make --version && pdflatex --version && kpsewhich article.cls
 
