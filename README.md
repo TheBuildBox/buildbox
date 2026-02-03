@@ -15,22 +15,23 @@ It is however of course possible to use the images interactively.
 
 
 
-**planned characteristics:**
+**planned and existing  characteristics:**
 
 **OS flavors:**
 * Fedora Linux
-* Debian/Ubuntu Linux
-* maybe opensuse Linux
+* Debian Linux
+* Ubuntu Linux
+* maybe openSUSE Linux
 
 **Language types:/installed tools**
 
-* c: C(gcc) and make/autotools/Cmake - for building C language projects
-* maybe: cpp: make tools an compiler for C++ projects
-* go: golang and make - for building golang projects
+* c: C compiler (gcc) and make/autotools/Cmake - for building C language projects
 * latex: LaTeX/beamer/wiki2beamer and make - build LaTeX documents and LaTeX/beamer presentations
 
 **possible future variants:**
 
+* maybe: cpp: make tools and compiler for C++ projects
+* maybe: go: golang and make - for building golang projects
 * container image packaging
 * rpm packaging
 * deb packaging
@@ -39,7 +40,7 @@ It is however of course possible to use the images interactively.
 Of these combinations, only the c and latex  images on fedora, debian, ubuntu, and openSUSE  are   implemented so far.
 
 
-In order to build or use these container images,  one will need a system (typically Linux or MacOS) with docker or podman and `make`installed  and the ability to run bash scripts.
+In order to build or use these container images,  one will need a system (typically Linux or MacOS) with docker or podman and `make` installed  and the ability to run bash scripts.
 
 
 
