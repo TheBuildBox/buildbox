@@ -14,6 +14,7 @@ LABEL org.opencontainers.image.url="https://github.com/TheBuildBox/buildbox"
 
 
 COPY "${VERIFY_SCRIPT}" /usr/local/bin/verify.sh
+COPY common.sh /usr/local/bin/common.sh
 RUN chmod +x /usr/local/bin/verify.sh
 COPY  "${INSTALL_SCRIPT}" /usr/local/bin/install-packages.sh
 RUN chmod +x /usr/local/bin/install-packages.sh
