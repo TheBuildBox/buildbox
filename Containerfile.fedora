@@ -7,7 +7,7 @@ ARG INSTALL_SCRIPT=""
 ARG VERIFY_SCRIPT=""
 
 LABEL org.opencontainers.image.title="${BUILD_LANG}  Build Container"
-LABEL org.opencontainers.image.description="Container for building ${BUILD_LANG} projects"
+LABEL org.opencontainers.image.description="Fedora Container for building ${BUILD_LANG} projects"
 LABEL org.opencontainers.image.vendor="buildbox"
 LABEL org.opencontainers.image.url="https://github.com/TheBuildBox/buildbox"
 
