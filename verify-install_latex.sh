@@ -4,6 +4,8 @@ set -euo pipefail
 
 echo "verifying latex install."
 
+echo "1. verifying that make is installed."
+
 echo "checking for 'make'"
 if ls -l /usr/bin/make ; then
 	echo "/usr/bin/make found"
@@ -18,6 +20,6 @@ if ls -l /usr/bin/make ; then
 fi
 
 
-echo "verifying commands and latexclass"
+echo "2. verifying working of  commands and availability of the article document class"
 
 make --version && pdflatex --version && kpsewhich article.cls
