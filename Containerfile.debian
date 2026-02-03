@@ -8,7 +8,7 @@ LABEL maintainer="Michael Adam <obnox@samba.org>"
 LABEL org.opencontainers.image.title="debian ${BUILD_LANG} Build Container"
 LABEL org.opencontainers.image.description="debian Container for building ${BUILD_LANG} projects"
 LABEL org.opencontainers.image.vendor="buildbox"
-LABEL org.opencontainers.image.url="https://github.com/obnoxxx/buildbox"
+LABEL org.opencontainers.image.url="https://github.com/TheBuildBox/buildbox"
 
 COPY  "${INSTALL_SCRIPT}" /usr/local/bin/install-packages.sh
 RUN chmod +x /usr/local/bin/install-packages.sh
