@@ -11,7 +11,7 @@ set -euo pipefail
 
 		verify_binary "make" || exit 1
 
-		echo "2. veigying that gcc is installed."
+		echo "2. veifying that gcc is installed."
 		verify_binary "gcc" || exit 1
 
 
