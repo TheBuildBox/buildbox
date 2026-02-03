@@ -19,14 +19,14 @@ RUN chmod +x /usr/local/bin/verify.sh
 COPY  "${INSTALL_SCRIPT}" /usr/local/bin/install-packages.sh
 RUN chmod +x /usr/local/bin/install-packages.sh
 ENV PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin
-# install, fix, and verify in ONE ATOMIC STEP
+# install, fix, and verify in ONE ATOMIC STEP,
+# forcing a sane PATH for the duration of the install
 RUN true && \
-    # Force a sane PATH for the duration of the install
-    export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin" && \
-    /usr/local/bin/install-packages.sh && \
-    echo "Restoring symlinks if broken..." && \
-    ( [ -L /bin ] || (mv /bin/* /usr/bin/ && rm -rf /bin && ln -s usr/bin /bin) ) && \
-    echo "Verifying binaries before layer commit..." && \
-    /usr/local/bin/verify.sh && \
-        echo "your buildbox is ready."; \
+export PATH="/usr/local/bin:/usr/bin:/bin:/sbin:/usr/local/sbin:/usr/sbin" && \
+/usr/local/bin/install-packages.sh && echo "packages installed successfully." && \
+echo "Restoring symlinks if broken..." && \
+( [ -L /bin ] || (mv /bin/* /usr/bin/ && rm -rf /bin && ln -s usr/bin /bin) ) && \
+echo "Verifying binaries before layer commit..." && \
+/usr/local/bin/verify.sh && \
+echo "your buildbox is ready."
 
