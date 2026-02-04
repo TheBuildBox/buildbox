@@ -3,66 +3,94 @@
 [![GPL license](https://img.shields.io/badge/license-GPL-blue.svg)](http://opensource.org/licenses/GPL)
 
 
+# About This Project
 
-The purpose of this project is to provide container images that can be used to compile/build and package software projects
-along with accompanying cli tooling to facilitate convenient execution of builds in those containers.
+
+This project provides cli tooling to build and possibly package software projects in containers using  pre-created specialized container images.
+
+
+It additionally provides meachanisms to create custom images.
+
 
 Note that the focus is not on working interactively but  instead on compiling/building with an intention
 to provide tooling for creating deterministic and reproducible builds
 
-It is however of course possible to use the images interactively.
+It is however of course also possible to use the images interactively.
 
 
 
 
-**planned and existing  characteristics:**
+## Existing and Planned  Image  Characteristics
 
-**OS flavors:**
+### Existing OS flavors
 * Fedora Linux
 * Debian Linux
 * Ubuntu Linux
-* maybe openSUSE Linux
+* openSUSE Linux
 
-**Language types:/installed tools**
+### Existing Language variants/installed tools
 
-* c: C compiler (gcc) and make/autotools/Cmake - for building C language projects
-* latex: LaTeX/beamer/wiki2beamer and make - build LaTeX documents and LaTeX/beamer presentations
+* `c`: C compiler (gcc) and make/autotools/Cmake - for building C language projects
+* `latex`: LaTeX/beamer/wiki2beamer and make - build LaTeX documents and LaTeX/beamer presentations
 
-**possible future variants:**
+### Possible Future Variants
 
-* maybe: cpp: make tools and compiler for C++ projects
-* maybe: go: golang and make - for building golang projects
-* container image packaging
+* cpp: make tools and compiler for C++ projects
+* go: golang and make - for building golang projects
 * rpm packaging
 * deb packaging
+* container image packaging
 
 
 Of these combinations, only the c and latex  images on fedora, debian, ubuntu, and openSUSE  are   implemented so far.
 
 
-In order to build or use these container images,  one will need a system (typically Linux or MacOS) with docker or podman and `make` installed  and the ability to run bash scripts.
+In order to build or use these container images,  one will need a Unix-like system (typically Linux or MacOS) with docker or podman and `make` installed  and the ability to run bash scripts.
 
 
 
 
-
+## Creating Custom Images
 
 **Example how to build and publish fedora based image for compiling C projects:**
 
 ```console
 
-$ make  IMAGE_LANG=c IMAGE_OS=fedora IMAGE_REGISTRY=quay.io REGISTRY_NAMESPACE=fillme image-build
+$ make  CONTAINER_CMD=podman IMAGE_LANG=c IMAGE_OS=fedora IMAGE_REGISTRY=quay.io REGISTRY_NAMESPACE=fillme image-build
 $ podman login quay.io
-$ make  IMAGE_LANG=c IMAGE_OS=fedora IMAGE_REGISTRY=quay.io REGISTRY_NAMESPACE=fillme image-push
+$ make  CONTAINER_CMD=podman IMAGE_LANG=c IMAGE_OS=fedora IMAGE_REGISTRY=quay.io REGISTRY_NAMESPACE=fillme image-push
 
 
 ```
 
-Note that `quay.io` is the default registry and `buildbox` the default namespace . The above example shows how to override them.
+Note that `quay.io` is the default registry and `buildbox` the default namespace. The above example shows how to override them.
 
-**Using the image:**
+the container command (docker or podman) used for building the image  is auto-detected by default with a preference for podman.
+The above example shows how to override it with the `CONTAINER_CMD`variable.
 
-From the root of a software project that one wants to compile, arbitrary commands contained in the image   can be run inside the build container
+The image tag to identify the image  is by default constructed as
+
+`$IMAGE_REGISTRY/$REGISTRY_NAMESPACE/$IMAGE_OS-$IMAGE_LANG:latest`.
+
+The `OS-LANG` part can be overridden with the  `IMAGE_NAME` variable.
+
+The  version tag `latest` can be overridden with the `IMAGE_TAG` variable.
+
+The entire tag can be overridden with the `IMG` variable. 
+
+
+
+
+
+
+
+
+
+
+
+## Using the images
+
+From the root of a software project that one wants to compile, arbitrary commands contained in the image can be run inside the build container
 as follows, for example `configure`and `make` as well as installation of library dependencies.
 
 Example for starting an interactive shell:
@@ -75,7 +103,10 @@ $ podman  run -it --workdir /work --mount type=bind,source=$(pwd),target=/work,r
 
 It works correspondingly with docker.
 
-prepuilt fedora, debian,  ubuntu, and openSUSE  images for c and latex   images are available on quay:
+
+## Prebuilt Images On quay
+
+prebuilt fedora, debian,  ubuntu, and openSUSE  images for c and latex   are available on quay:
 
 * [fedora-c](https://quay.io/repository/buildbox/buildbox/fedora-c).
 * [debian-c](https://quay.io/repository/buildbox/buildbox/debian-c).
@@ -87,11 +118,11 @@ prepuilt fedora, debian,  ubuntu, and openSUSE  images for c and latex   images 
 * [suse-latex](https://quay.io/repository/buildbox/buildbox/suse-latex).
 
 
-**builbo cli:**
+## builbo cli 
 
 Apart from tooling to create container images, the project provides a cli tool `builbo` to facilitate building software projects in the buildbox containers.
 
-example workflow:
+**example workflow for building:** 
 
 ```console
 $ git clone project
