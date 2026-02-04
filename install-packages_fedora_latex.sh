@@ -47,7 +47,7 @@
 	texlive-amslatex-primer-doc && \
 	dnf -y install "https://kojipkgs.fedoraproject.org//packages/wiki2beamer/0.10.0/9.fc38/noarch/wiki2beamer-0.10.0-9.fc38.noarch.rpm" && \
 	dnf clean all && \
-    ech "done dnf install and clean. now syncing." && \
+    echo "DONE dnf install and clean. now syncing." && \
 	sync
 
 	RC=$?
@@ -55,9 +55,9 @@
 #wiki2beamer: use the legacy RPM (The Fedora 38 package)
 
 		if [ ${RC} -eq 0 ]; then
-				echo "successfully installed packages."
+				echo "SUCCESSfully installed packages."
 		else
-				echo "error installing packages."
+				echo "ERROR installing packages."
         fi
 
 		exit ${RC}
