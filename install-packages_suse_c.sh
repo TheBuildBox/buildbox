@@ -3,14 +3,18 @@
 set -euo pipefail
 
 
-		zypper install  -y git gcc make cmake automake autoconf python3 vim less
+		zypper install  -y git gcc make cmake automake autoconf python3 vim less && \
+		sync
 
 		RC=$?
+		echo "DONE installing packages"
+		echo "return code: ${RC}"
 
 		if [ ${RC} -eq 0 ]; then
-				echo "successfully installed packages."
+				echo "SUCCESSfully installed packages."
 		else
-				echo "error installing packages."
-        fi
+				echo "ERROR installing packages."
+		fi
+
 
 		exit ${RC}
