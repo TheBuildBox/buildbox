@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-
 		zypper install  -y git gcc make cmake automake autoconf python3 vim less && \
 		sync
 
