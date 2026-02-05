@@ -1,7 +1,7 @@
 FROM docker.io/library/debian
 
 
-ARG BUILD_LANG="default-lang"
+ARG BUILD_LANG=""
 ARG INSTALL_SCRIPT=""
 ARG VERIFY_SCRIPT=""
 
