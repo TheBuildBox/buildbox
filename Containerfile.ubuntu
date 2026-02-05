@@ -2,6 +2,7 @@ FROM docker.io/library/ubuntu
 
 ARG BUILD_LANG=""
 ARG INSTALL_SCRIPT=""
+ARG VERIFY_SCRIPT=""
 
 LABEL  maintainer="Michael Adam <obnox@samba.org>"
 
@@ -10,7 +11,19 @@ LABEL org.opencontainers.image.description="ubuntu Container for building ${BUIL
 LABEL org.opencontainers.image.vendor="buildbox"
 LABEL org.opencontainers.image.url="https://github.com/TheBuildBox/buildbox"
 
+
+
+COPY "${VERIFY_SCRIPT}" /usr/local/bin/verify.sh
+COPY common.sh /usr/local/bin/common.sh
+RUN chmod +x /usr/local/bin/verify.sh
 COPY  "${INSTALL_SCRIPT}" /usr/local/bin/install-packages.sh
 RUN chmod +x /usr/local/bin/install-packages.sh
-RUN /usr/local/bin/install-packages.sh
+# Set a sane PATH during installation:
+ENV PATH="/usr/local/bin:/usr/bin:/bin:/sbin:/usr/local/sbin:/usr/sbin"
+# install and verify in one ATOMIC STEP:
+RUN true && \
+/usr/local/bin/install-packages.sh && \
+echo "Verifying binaries before layer commit..." && \
+/usr/local/bin/verify.sh && \
+echo "your buildbox is ready."
 
