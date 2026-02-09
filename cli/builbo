@@ -49,7 +49,7 @@ These are the supported options:
 [ -l | --lang (c|latex) ]                    - compilation language (default: $LANG)
 [ -r | --registry (quay.io|... ]             - container registry (default: $REGISTRY)
 [ -c | --container-cmd (podman|docker) ]     - default: $CONTAINER_CMD (auto-detected)
-[ -o | --os (fedora|debian|ubuntu|suse) ]         - linux distro (default: $OS)
+[ -o | --os (fedora|debian|ubuntu|rocky|suse) ]         - linux distro (default: $OS)
 [ -n | --registry-namespace (...) ]          - default: $NAMESPACE 
 [ -s  | --build-script (command|path) ]              - command or local script (in the CWD)  for building the project.
 [ -d | --deps (pkg,pkg,pkg,...) ]            - additional packages to install (comma-separated)

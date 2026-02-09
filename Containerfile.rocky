@@ -1,0 +1,29 @@
+FROM docker.io/library/rockylinux:8
+
+LABEL maintainer="Michael Adam <obnox@samba.org>"
+
+ARG BUILD_LANG=""
+ARG INSTALL_SCRIPT=""
+ARG VERIFY_SCRIPT=""
+
+LABEL org.opencontainers.image.title="${BUILD_LANG}  Build Container"
+LABEL org.opencontainers.image.description="Rocky Linux Container for building ${BUILD_LANG} projects"
+LABEL org.opencontainers.image.vendor="buildbox"
+LABEL org.opencontainers.image.url="https://github.com/TheBuildBox/buildbox"
+
+
+
+COPY "${VERIFY_SCRIPT}" /usr/local/bin/verify.sh
+COPY common.sh /usr/local/bin/common.sh
+RUN chmod +x /usr/local/bin/verify.sh
+COPY  "${INSTALL_SCRIPT}" /usr/local/bin/install-packages.sh
+RUN chmod +x /usr/local/bin/install-packages.sh
+# force a sane PATH for the duration of the install
+ENV PATH=/usr/local/bin:/usr/bin:/bin:/sbib:/usr/local/sbin:/usr/sbin
+# install, fix, and verify in ONE ATOMIC STEP
+RUN true && \
+/usr/local/bin/install-packages.sh && \
+echo "Verifying binaries before layer commit..." && \
+/usr/local/bin/verify.sh && \
+echo "your buildbox is ready."
+
