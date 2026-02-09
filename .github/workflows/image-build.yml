@@ -26,7 +26,7 @@ jobs:
   ImageBuild:
     strategy:
       matrix:
-        os: [fedora, suse, debian, ubuntu]
+        os: [fedora, suse, debian, ubuntu, rocky]
         lang: [c,latex]
     runs-on: ubuntu-latest
     steps:

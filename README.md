@@ -27,6 +27,7 @@ It is however of course also possible to use the images interactively.
 * Debian Linux
 * Ubuntu Linux
 * openSUSE Linux
+* Rocky Linux
 
 ### Existing Language variants/installed tools
 
