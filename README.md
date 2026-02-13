@@ -1,5 +1,5 @@
 
-[![Build Status](https://github.com/TheBuildBox/buildbox/workflows/vuild-example-projects.yml/badge.svg?branch=main)](https://github.com/TheBuildBox/buildbox/actions)
+[![Build Status](https://github.com/TheBuildBox/buildbox/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/SeaTract/seatract/actions)
 [![GPL license](https://img.shields.io/badge/license-GPL-blue.svg)](http://opensource.org/licenses/GPL)
 
 
