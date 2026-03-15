@@ -3,37 +3,44 @@
 function detect_container_command() {
 
 
-if [ -z "${CONTAINER_CMD}" ]; then
-    CONTAINER_CMD="$(podman version > /dev/null 2>&1 && echo podman)"
-fi
-
-if [ -z "${CONTAINER_CMD}" ]; then
-   CONTAINER_CMD="$(docker version > /dev/null 2>&1 && echo docker)"
-
-fi
+	if [ -z "${DEFAULT_CONTAINER_CMD}" ]; then
+		DEFAULT_CONTAINER_CMD="$(podman version > /dev/null 2>&1 && echo podman)"
+	fi
+	if [ -z "${DEFAULT_CONTAINER_CMD}" ]; then
+		DEFAULT_CONTAINER_CMD="$(docker version > /dev/null 2>&1 && echo docker)"
+	fi
+	CONTAINER_CMD="${DEFAULT_CONTAINER_CMD}"
 }
 
 
 
 # default values for ccommand line options:
- LANG=c
- REGISTRY=quay.io
+#
+#DEFAULT_CONTAINER_CMD=""
+ DEFAULT_LANG="c"
+ LANG="${DEFAULT_LANG}"
+ DEFAULT_REGISTRY="quay.io"
+ REGISTRY="${DEFAULT_REGISTRY}"
  CONTAINER_CMD=""
- OS=fedora
- NAMESPACE=buildbox
+ DEFAULT_OS=fedora
+ OS="${DEFAULT_OS}"
+ DEFAULT_NAMESPACE="buildbox"
+ NAMESPACE="${DEFAULT_NAMESPACE}"
  BUILD_CMD=""
  DEPS=""
  DEFAULT_ACTION="help"
- ACTION="$DEFAULT_ACTION"
- # action that was explicxitly set from the command line:
- EXPLICIT_ACTION=""
+ ACTION="${DEFAULT_ACTION}"
+ # action that was explixitly set from the command line:
+ SELECTED_ACTION=""
+ ACTION="" 
  # shell for interactive use:
- I_SHELL="bash"
+ DEFAULT_I_SHELL="bash"
+ I_SHELL="${DEFAULT_I_SHELL}"
 
 
 detect_container_command
 
-if [ -z "$CONTAINER_CMD" ]; then
+if [ -z "${DEFAULT_CONTAINER_CMD}" ]; then
     echo "error: failed to detect container command (podman or docker)."
     exit 1
 fi
@@ -43,17 +50,17 @@ function usage() {
 
 builbo: build software projects in buildbox containers.
 
-USAGE: $0 options
+USAGE: builbo  options
 
 These are the supported options:
-[ -l | --lang (c|latex) ]                    - compilation language (default: $LANG)
-[ -r | --registry (quay.io|... ]             - container registry (default: $REGISTRY)
-[ -c | --container-cmd (podman|docker) ]     - default: $CONTAINER_CMD (auto-detected)
-[ -o | --os (fedora|debian|ubuntu|rocky|suse) ]         - linux distro (default: $OS)
-[ -n | --registry-namespace (...) ]          - default: $NAMESPACE 
+[ -l | --lang (c|latex) ]                    - compilation language (default: ${DEFAULT_LANG})
+[ -r | --registry (quay.io|... ]             - container registry (default: ${DEFAULT_REGISTRY})
+[ -c | --container-cmd (podman|docker) ]     - default: ${DEFAULT_CONTAINER_CMD} (auto-detected)
+[ -o | --os (fedora|debian|ubuntu|rocky|suse) ]         - linux distro (default: ${DEFAULT_OS})
+[ -n | --registry-namespace (...) ]          - default: ${DEFAULT_NAMESPACE}
 [ -s  | --build-script (command|path) ]              - command or local script (in the CWD)  for building the project.
 [ -d | --deps (pkg,pkg,pkg,...) ]            - additional packages to install (comma-separated)
-  -i | --shell (bash) ]                      - sinteractive shell (default: $I_SHELL)
+[  -i | --shell (bash) ]                      - interactive shell (default: ${DEFAULT_I_SHELL})
 [ -h | --help ]                              - action help: print this usage information
 [-t | --test ]                               - action test: print some diagnostic info for  testing this program
 [ -b | --build ]                             - action build: perform a build in the CWD
@@ -78,15 +85,17 @@ function set_action() {
 
 local action="$1"
 
-
-
-if [ -n "$EXPLICIT_ACTION" ]; then
+if [ -n "${SELECTED_ACTION}" ]; then
         echo "Error: multiple actions specified on cmdline but only one is allowed."
         usage
         exit 1
     fi
-    ACTION="$action"
-    EXPLICIT_ACTION="$action"
+
+
+
+	echo "selecting action '${action}'"
+	ACTION="${action}"
+	SELECTED_ACTION="${action}"
 
 }
 
@@ -99,9 +108,9 @@ optstring_long="lang:,registry:,container-cmd:,help,test,build,enter,build-scrip
 
 
 parsed_args=$(getopt  -n "builbo" -o "$optstring" -l "$optstring_long" -- "$@")
-args_valid=$?
+args_are_valid=$?
 
-if [ "$args_valid" != "0" ]; then
+if [ "$args_are_valid" != "0" ]; then
   echo "error:invalid args."
   usage
   exit 1
@@ -109,43 +118,91 @@ fi
 
 # processing parsed args
 
-eval set -- "$parsed_args"
+echo " processing command line arguments.."
+eval set -- "${parsed_args}"
 while :
 do
-  case "$1" in
- -l | --lang) LANG="$2" ; shift 2 ;;
- -r  | --registry) REGISTRY="$2" ; shift 2 ;;
- -c | --container-cmd) CONTAINER_CMD="$2"; shift 2 ;;
- -o | --os) OS="$2"; shift 2 ;;
- -n | --registry-namespace) NAMESPACE="$2" ; shift 2 ;;
- -s | --build-script) BUILD_CMD="$2" ; shift 2 ;;
- -d | --deps) DEPS="$2"; shift 2 ;;
- -h | --help) set_action "help" ; shift ;;
- -b| --build) set_action "build" ; shift ;;
- -t| --test) set_action "test" ; shift ;;
- -e|--enter) set_action "enter" ; shift ;;
+arg="$1"
+echo "processing argument '${arg}'."
+case "${arg}" in
+ -l | --lang)
+	LANG="$2"
+	echo "language '${LANG}' specified."
+	shift 2
+	;;
+ -r  | --registry)
+	REGISTRY="$2"
+	echo "registry '${REGISTRY}' specified."
+
+	shift 2
+	;;
+ -c | --container-cmd)
+	CONTAINER_CMD="$2"
+	echo "container command '${CONTAINER_CMD}' specified."
+	shift 2
+	;;
+ -o | --os)
+	OS="$2"
+	echo "operating system '${OS}'specified."
+	shift 2
+	;;
+ -n | --registry-namespace)
+	NAMESPACE="$2"
+	echo "namespace '${NAMESPACE}' specified."
+	shift 2
+	;;
+ -s | --build-script)
+	BUILD_CMD="$2"
+	echo "build command '${BUILD_CMD}' specified."
+	shift 2
+	;;
+ -d | --deps)
+	DEPS="$2"
+	echo "dependencies '${DEPS}' specified."
+	shift 2
+	;;
+ -h | --help)
+	set_action "help"
+	echo "action help specified."
+	shift
+	;;
+ -b| --build)
+	echo "action build specified."
+	set_action "build"
+	echo 
+	shift
+	;;
+ -t| --test)
+	set_action "test"
+	echo "action test specified."
+	shift
+	;;
+ -e|--enter)
+	set_action "enter"
+	echo "action enter specified."
+	shift
+	;;
 
 
  # -- means end of args. ignore and stop processing.
- --) shift ; break ;;
- *) echo "Unexpected option $1. - this should not happen."
- # this should have been caught above with args_valid
- usage
- exit 1 
+ --)
+ shift
+ break
  ;;
-  esac
+ *)
+	echo "Unexpected option $1. - this should not happen."
+	# this should have been caught above with args_valid
+	usage
+	exit 1 
+	;;
+esac
 done
-
-# done processing args
-
-
-
-
-
-
-
+echo "done processing arguments."
 
 #post-processing args
+
+
+
 
 
 if [ -z "$CONTAINER_CMD" ]; then
@@ -155,10 +212,10 @@ if [ -z "$CONTAINER_CMD" ]; then
 fi
 
 DEPS_PKGS="${DEPS//,/ }"
-IMAGE="$REGISTRY/$NAMESPACE/buildbox/$OS-$LANG:latest"
+IMAGE="${REGISTRY}/${NAMESPACE}/buildbox/${OS}-${LANG}:latest"
 
 
-case "$OS" in
+case "${OS}" in
 
 fedora)
     PKG_CMD="dnf install -y"
@@ -177,28 +234,23 @@ esac
 
 
 # setting CONTAINER_RUN_CMD assumes CONTAINER_RUN_CMD is set.
-if [ -z "$CONTAINER_CMD" ]; then
+if [ -z "${CONTAINER_CMD}" ]; then
     echo "error: container command not set. this should not happen."
     exit 1
 fi
 if [ "$CONTAINER_CMD" = "podman" ]; then
 
-    CONTAINER_RUN_CMD="$CONTAINER_CMD run -it --workdir /work --mount type=bind,source=$(pwd),target=/work,relabel=private --platform linux/amd64 $IMAGE"
+    CONTAINER_RUN_CMD="${CONTAINER_CMD} run -it --workdir /work --mount type=bind,source=$(pwd),target=/work,relabel=private --platform linux/amd64 ${IMAGE}"
  elif [ "$CONTAINER_CMD" = "docker" ]; then
-     CONTAINER_RUN_CMD="$CONTAINER_CMD run --workdir /work -v $(pwd):/work --platform linux/amd64 $IMAGE"
-      
+     CONTAINER_RUN_CMD="${CONTAINER_CMD} run --workdir /work -v $(pwd):/work --platform linux/amd64 ${IMAGE}"
+
 fi
 
-if [ -z "$ACTION" ]; then
-echo "error: no action selected. Please use exactly one of -t, -h, and -b."
-usage
-exit 1
-fi
 
-if [ "$ACTION" = "build" ]; then
+if [ "${ACTION}" = "build" ]; then
 
 
-    if [ -z "$BUILD_CMD" ]; then
+    if [ -z "${BUILD_CMD}" ]; then
 
         echo "error: action 'build' requires --build-script (-s)"
         usage
@@ -214,18 +266,18 @@ fi
 function print_settings() {
   echo "settings:"
   echo
-  echo "LANG: $LANG"
-  echo "OS: $OS"
-  echo "REGISTRY: $REGISTRY"
-  echo "NAMESPACE: $NAMESPACE"
-  echo "BUILD_CMD: $BUILD_CMD"
-  echo "DEPS: $DEPS"
-  echo "DEPS_PKGS: $DEPS_PKGS"
-  echo "PKG_CMD: $PKG_CMD"
-  echo "CONTAINER_CMD: $CONTAINER_CMD"
-  echo "CONTAINER_RUN_CMD: '$CONTAINER_RUN_CMD'"
-  echo "interactive shell: '$I_SHELL'"
-  echo "IMAGE: $IMAGE"
+  echo "LANG: ${LANG}"
+  echo "OS: ${OS}"
+  echo "REGISTRY: ${REGISTRY}"
+  echo "NAMESPACE: ${NAMESPACE}"
+  echo "BUILD_CMD: ${BUILD_CMD}"
+  echo "DEPS: ${DEPS}"
+  echo "DEPS_PKGS: ${DEPS_PKGS}"
+  echo "PKG_CMD: ${PKG_CMD}"
+  echo "CONTAINER_CMD: ${CONTAINER_CMD}"
+  echo "CONTAINER_RUN_CMD: '${CONTAINER_RUN_CMD}'"
+  echo "interactive shell: '${I_SHELL}'"
+  echo "IMAGE: ${IMAGE}"
     
 }
 
@@ -235,7 +287,7 @@ if [ "$ACTION" = "test" ]; then
     exit 0
 fi
 
-if [ "$ACTION" = "help" ]; then
+if [ "${ACTION}" = "help" ]; then
 
     echo "performing help action."
 
@@ -259,8 +311,8 @@ fi
 
 
 function install_deps() {
-    if [ -n "$DEPS" ]; then
-        $CONTAINER_RUN_CMD   bash -c "$PKG_CMD $DEPS_PKGS"
+    if [ -n "${DEPS}" ]; then
+        ${CONTAINER_RUN_CMD}   bash -c "${PKG_CMD} ${DEPS_PKGS}"
 
     fi
 
@@ -270,28 +322,28 @@ function install_deps_and_run_build() {
 
 
 
-    local CMD="$BUILD_CMD"
+    local CMD="${BUILD_CMD}"
 
-    if [ -n "$DEPS" ]; then
-        CMD="$PKG_CMD $DEPS_PKGS && $BUILD_CMD"
+    if [ -n "${DEPS}" ]; then
+        CMD="${PKG_CMD} ${DEPS_PKGS} && ${BUILD_CMD}"
 
     fi
 
-$CONTAINER_RUN_CMD bash -c "$CMD"
+${CONTAINER_RUN_CMD} bash -c "${CMD}"
 }
 
 function enter_container() {
 
-$CONTAINER_RUN_CMD "$I_SHELL"
+${CONTAINER_RUN_CMD} "${I_SHELL}"
 
 }
 
 
-if [ "$ACTION" = "build" ]; then
+if [ "${ACTION}" = "build" ]; then
 echo "performing build action."
 install_deps_and_run_build
 
-elif [ "$ACTION" = "enter" ]; then
+elif [ "${ACTION}" = "enter" ]; then
    echo "performing enter action." 
     enter_container
 fi
