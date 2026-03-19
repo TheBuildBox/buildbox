@@ -30,7 +30,7 @@ function detect_container_command() {
  DEPS=""
  DEFAULT_ACTION="help"
  ACTION="${DEFAULT_ACTION}"
- # action that was explixitly set from the command line:
+ # action that was explicitly set from the command line:
  SELECTED_ACTION=""
  ACTION="" 
  # shell for interactive use:
