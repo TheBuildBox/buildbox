@@ -3,13 +3,13 @@
 function detect_container_command() {
 
 
-	if [ -z "${DEFAULT_CONTAINER_CMD}" ]; then
-		DEFAULT_CONTAINER_CMD="$(podman version > /dev/null 2>&1 && echo podman)"
-	fi
-	if [ -z "${DEFAULT_CONTAINER_CMD}" ]; then
-		DEFAULT_CONTAINER_CMD="$(docker version > /dev/null 2>&1 && echo docker)"
-	fi
-	CONTAINER_CMD="${DEFAULT_CONTAINER_CMD}"
+if [ -z "${DEFAULT_CONTAINER_CMD}" ]; then
+	DEFAULT_CONTAINER_CMD="$(podman version > /dev/null 2>&1 && echo podman)"
+fi
+if [ -z "${DEFAULT_CONTAINER_CMD}" ]; then
+	DEFAULT_CONTAINER_CMD="$(docker version > /dev/null 2>&1 && echo docker)"
+fi
+CONTAINER_CMD="${DEFAULT_CONTAINER_CMD}"
 }
 
 
@@ -17,21 +17,22 @@ function detect_container_command() {
 # default values for ccommand line options:
 #
 #DEFAULT_CONTAINER_CMD=""
- DEFAULT_LANG="c"
- LANG="${DEFAULT_LANG}"
- DEFAULT_REGISTRY="quay.io"
- REGISTRY="${DEFAULT_REGISTRY}"
- CONTAINER_CMD=""
- DEFAULT_OS=fedora
- OS="${DEFAULT_OS}"
- DEFAULT_NAMESPACE="buildbox"
- NAMESPACE="${DEFAULT_NAMESPACE}"
- BUILD_CMD=""
- DEPS=""
- DEFAULT_ACTION="help"
+DEFAULT_LANG="c"
+LANG="${DEFAULT_LANG}"
+DEFAULT_REGISTRY="quay.io"
+REGISTRY="${DEFAULT_REGISTRY}"
+CONTAINER_CMD=""
+DEFAULT_OS=fedora
+OS="${DEFAULT_OS}"
+DEFAULT_NAMESPACE="buildbox"
+NAMESPACE="${DEFAULT_NAMESPACE}"
+BUILD_CMD=""
+DEPS=""
+DEFAULT_ACTION="help"
+ACTION="${DEFAULT_ACTION}"
+# action that was explicitly set from the command line:
+SELECTED_ACTION=""
  ACTION="${DEFAULT_ACTION}"
- # action that was explicitly set from the command line:
- SELECTED_ACTION=""
  # shell for interactive use:
  DEFAULT_I_SHELL="bash"
  I_SHELL="${DEFAULT_I_SHELL}"
