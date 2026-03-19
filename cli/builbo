@@ -32,7 +32,6 @@ function detect_container_command() {
  ACTION="${DEFAULT_ACTION}"
  # action that was explicitly set from the command line:
  SELECTED_ACTION=""
- ACTION="${DEFAULT_ACTION}"
  # shell for interactive use:
  DEFAULT_I_SHELL="bash"
  I_SHELL="${DEFAULT_I_SHELL}"
