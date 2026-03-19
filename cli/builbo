@@ -32,7 +32,7 @@ function detect_container_command() {
  ACTION="${DEFAULT_ACTION}"
  # action that was explicitly set from the command line:
  SELECTED_ACTION=""
- ACTION="" 
+ ACTION="${DEFAULT_ACTION}"
  # shell for interactive use:
  DEFAULT_I_SHELL="bash"
  I_SHELL="${DEFAULT_I_SHELL}"
@@ -102,101 +102,134 @@ if [ -n "${SELECTED_ACTION}" ]; then
 
 
 
-# parsing command line arguments:
-optstring="l:r:c:o:n:hbtes:d:"
-optstring_long="lang:,registry:,container-cmd:,help,test,build,enter,build-script:,deps:"
-
-
-parsed_args=$(getopt  -n "builbo" -o "$optstring" -l "$optstring_long" -- "$@")
-args_are_valid=$?
-
-if [ "$args_are_valid" != "0" ]; then
-  echo "error:invalid args."
-  usage
-  exit 1
-fi
-
-# processing parsed args
+# parsing command line arguments (portable: works on stock macOS without GNU getopt):
+# We support GNU-style long options by translating them to short options first,
+# then using POSIX getopts.
 
 echo " processing command line arguments.."
-eval set -- "${parsed_args}"
-while :
-do
-arg="$1"
-echo "processing argument '${arg}'."
-case "${arg}" in
- -l | --lang)
-	LANG="$2"
-	echo "language '${LANG}' specified."
-	shift 2
-	;;
- -r  | --registry)
-	REGISTRY="$2"
-	echo "registry '${REGISTRY}' specified."
 
-	shift 2
-	;;
- -c | --container-cmd)
-	CONTAINER_CMD="$2"
-	echo "container command '${CONTAINER_CMD}' specified."
-	shift 2
-	;;
- -o | --os)
-	OS="$2"
-	echo "operating system '${OS}'specified."
-	shift 2
-	;;
- -n | --registry-namespace)
-	NAMESPACE="$2"
-	echo "namespace '${NAMESPACE}' specified."
-	shift 2
-	;;
- -s | --build-script)
-	BUILD_CMD="$2"
-	echo "build command '${BUILD_CMD}' specified."
-	shift 2
-	;;
- -d | --deps)
-	DEPS="$2"
-	echo "dependencies '${DEPS}' specified."
-	shift 2
-	;;
- -h | --help)
-	set_action "help"
-	echo "action help specified."
-	shift
-	;;
- -b| --build)
-	echo "action build specified."
-	set_action "build"
-	echo 
-	shift
-	;;
- -t| --test)
-	set_action "test"
-	echo "action test specified."
-	shift
-	;;
- -e|--enter)
-	set_action "enter"
-	echo "action enter specified."
-	shift
-	;;
-
-
- # -- means end of args. ignore and stop processing.
- --)
- shift
- break
- ;;
- *)
-	echo "Unexpected option $1. - this should not happen."
-	# this should have been caught above with args_valid
-	usage
-	exit 1 
-	;;
-esac
+rewrite_args=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --lang)
+      if [ $# -lt 2 ] || [[ "$2" == -* ]]; then
+        echo "error: option '$1' requires a value." >&2
+        usage
+        exit 1
+      fi
+      rewrite_args+=("-l" "$2"); shift 2 ;;
+    --lang=*)           rewrite_args+=("-l" "${1#*=}"); shift ;;
+    --registry)
+      if [ $# -lt 2 ] || [[ "$2" == -* ]]; then
+        echo "error: option '$1' requires a value." >&2
+        usage
+        exit 1
+      fi
+      rewrite_args+=("-r" "$2"); shift 2 ;;
+    --registry=*)       rewrite_args+=("-r" "${1#*=}"); shift ;;
+    --container-cmd)
+      if [ $# -lt 2 ] || [[ "$2" == -* ]]; then
+        echo "error: option '$1' requires a value." >&2
+        usage
+        exit 1
+      fi
+      rewrite_args+=("-c" "$2"); shift 2 ;;
+    --container-cmd=*)  rewrite_args+=("-c" "${1#*=}"); shift ;;
+    --os)
+      if [ $# -lt 2 ] || [[ "$2" == -* ]]; then
+        echo "error: option '$1' requires a value." >&2
+        usage
+        exit 1
+      fi
+      rewrite_args+=("-o" "$2"); shift 2 ;;
+    --os=*)             rewrite_args+=("-o" "${1#*=}"); shift ;;
+    --registry-namespace)
+      if [ $# -lt 2 ] || [[ "$2" == -* ]]; then
+        echo "error: option '$1' requires a value." >&2
+        usage
+        exit 1
+      fi
+      rewrite_args+=("-n" "$2"); shift 2 ;;
+    --registry-namespace=*) rewrite_args+=("-n" "${1#*=}"); shift ;;
+    --build-script)
+      if [ $# -lt 2 ] || [[ "$2" == -* ]]; then
+        echo "error: option '$1' requires a value." >&2
+        usage
+        exit 1
+      fi
+      rewrite_args+=("-s" "$2"); shift 2 ;;
+    --build-script=*)   rewrite_args+=("-s" "${1#*=}"); shift ;;
+    --deps)
+      if [ $# -lt 2 ] || [[ "$2" == -* ]]; then
+        echo "error: option '$1' requires a value." >&2
+        usage
+        exit 1
+      fi
+      rewrite_args+=("-d" "$2"); shift 2 ;;
+    --deps=*)           rewrite_args+=("-d" "${1#*=}"); shift ;;
+    --shell)
+      if [ $# -lt 2 ] || [[ "$2" == -* ]]; then
+        echo "error: option '$1' requires a value." >&2
+        usage
+        exit 1
+      fi
+      rewrite_args+=("-i" "$2"); shift 2 ;;
+    --shell=*)          rewrite_args+=("-i" "${1#*=}"); shift ;;
+    --help)             rewrite_args+=("-h"); shift ;;
+    --test)             rewrite_args+=("-t"); shift ;;
+    --build)            rewrite_args+=("-b"); shift ;;
+    --enter)            rewrite_args+=("-e"); shift ;;
+    --)                 rewrite_args+=("--"); shift; break ;;
+    --*)
+      echo "error: unknown option '$1'." >&2
+      usage
+      exit 1
+      ;;
+    -*)                 rewrite_args+=("$1"); shift ;;
+    *)                  break ;;
+  esac
 done
+
+# append any remaining positional args unchanged
+while [ $# -gt 0 ]; do
+  rewrite_args+=("$1")
+  shift
+done
+
+set -- "${rewrite_args[@]}"
+
+# l=lang r=registry c=container-cmd o=os n=registry-namespace s=build-script d=deps i=shell h=help b=build t=test e=enter
+optstring=":l:r:c:o:n:s:d:i:hbte"
+OPTIND=1
+
+while getopts "${optstring}" opt; do
+  case "${opt}" in
+    l) LANG="${OPTARG}"; echo "language '${LANG}' specified." ;;
+    r) REGISTRY="${OPTARG}"; echo "registry '${REGISTRY}' specified." ;;
+    c) CONTAINER_CMD="${OPTARG}"; echo "container command '${CONTAINER_CMD}' specified." ;;
+    o) OS="${OPTARG}"; echo "operating system '${OS}' specified." ;;
+    n) NAMESPACE="${OPTARG}"; echo "namespace '${NAMESPACE}' specified." ;;
+    s) BUILD_CMD="${OPTARG}"; echo "build command '${BUILD_CMD}' specified." ;;
+    d) DEPS="${OPTARG}"; echo "dependencies '${DEPS}' specified." ;;
+    i) I_SHELL="${OPTARG}"; echo "interactive shell '${I_SHELL}' specified." ;;
+    h) set_action "help"; echo "action help specified." ;;
+    b) set_action "build"; echo "action build specified." ;;
+    t) set_action "test"; echo "action test specified." ;;
+    e) set_action "enter"; echo "action enter specified." ;;
+    :)
+      echo "error: invalid args." >&2
+      usage
+      exit 1
+      ;;
+    \?)
+      echo "error: invalid args." >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+
 echo "done processing arguments."
 
 #post-processing args
