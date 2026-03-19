@@ -56,4 +56,17 @@ jobs:
           pwd
           ls -l
           builbo -l c -o fedora  -b -s "./autogen.sh && make"
+  dogfood:
+    name: run self-check in builbo(dogfooding)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: install builbo
+        run: |
+          sudo make install-cli
+      - name: run self-check
+        run: |
+           builbo -l c -o fedora -d shellcheck,golang -b -s "make check"
+
+
 
